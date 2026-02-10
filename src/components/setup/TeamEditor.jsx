@@ -7,6 +7,7 @@ export default function TeamEditor({ teamId, compact = false }) {
   const { state, dispatch } = useAppContext();
   const team = state.teams.find(t => t.id === teamId);
   const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ number: '', name: '', position: 'PG', is_starter: false });
 
   if (!team) return null;
@@ -35,6 +36,37 @@ export default function TeamEditor({ teamId, compact = false }) {
     }
   }
 
+  function startEdit(player) {
+    setEditingId(player.id);
+    setForm({ number: String(player.number), name: player.name, position: player.position, is_starter: player.is_starter });
+    setAdding(false);
+  }
+
+  async function handleSaveEdit() {
+    if (!form.name.trim() || !form.number) return;
+    try {
+      const updated = await db.updatePlayer(editingId, {
+        number: parseInt(form.number, 10),
+        name: form.name.trim(),
+        position: form.position,
+        is_starter: form.is_starter,
+      });
+      dispatch({
+        type: 'UPDATE_TEAM_PLAYERS',
+        payload: { teamId, players: team.players.map(p => p.id === editingId ? updated : p) },
+      });
+      setEditingId(null);
+      setForm({ number: '', name: '', position: 'PG', is_starter: false });
+    } catch (err) {
+      console.error('Failed to update player:', err);
+    }
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm({ number: '', name: '', position: 'PG', is_starter: false });
+  }
+
   async function handleDelete(playerId) {
     try {
       await db.deletePlayer(playerId);
@@ -42,6 +74,7 @@ export default function TeamEditor({ teamId, compact = false }) {
         type: 'UPDATE_TEAM_PLAYERS',
         payload: { teamId, players: team.players.filter(p => p.id !== playerId) },
       });
+      if (editingId === playerId) cancelEdit();
     } catch (err) {
       console.error('Failed to delete player:', err);
     }
@@ -63,7 +96,7 @@ export default function TeamEditor({ teamId, compact = false }) {
     <div className={`team-editor ${compact ? 'compact' : ''}`}>
       <div className="team-editor-header">
         <h3>{team.name} Roster ({team.players.length} players)</h3>
-        {!adding && (
+        {!adding && !editingId && (
           <button className="btn btn-sm btn-primary" onClick={() => setAdding(true)}>+ Add Player</button>
         )}
       </div>
@@ -106,6 +139,44 @@ export default function TeamEditor({ teamId, compact = false }) {
         </div>
       )}
 
+      {editingId && (
+        <div className="player-add-form">
+          <input
+            className="input input-sm"
+            type="number"
+            placeholder="#"
+            value={form.number}
+            onChange={e => setForm({ ...form, number: e.target.value })}
+            style={{ width: '60px' }}
+          />
+          <input
+            className="input input-sm"
+            placeholder="Player name"
+            value={form.name}
+            onChange={e => setForm({ ...form, name: e.target.value })}
+            onKeyDown={e => e.key === 'Enter' && handleSaveEdit()}
+            autoFocus
+          />
+          <select
+            className="select select-sm"
+            value={form.position}
+            onChange={e => setForm({ ...form, position: e.target.value })}
+          >
+            {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={form.is_starter}
+              onChange={e => setForm({ ...form, is_starter: e.target.checked })}
+            />
+            Starter
+          </label>
+          <button className="btn btn-sm btn-primary" onClick={handleSaveEdit}>Save</button>
+          <button className="btn btn-sm" onClick={cancelEdit}>Cancel</button>
+        </div>
+      )}
+
       {ordered.length === 0 ? (
         <p className="text-muted">No players added yet. Click "+ Add Player" to build your roster.</p>
       ) : (
@@ -125,7 +196,7 @@ export default function TeamEditor({ teamId, compact = false }) {
           </thead>
           <tbody>
             {ordered.map((p, i) => (
-              <tr key={p.id} className={p.is_starter ? 'starter-row' : ''}>
+              <tr key={p.id} className={`${p.is_starter ? 'starter-row' : ''} ${editingId === p.id ? 'editing-row' : ''}`}>
                 <td className="slot-key">{['1','2','3','4','5','6','7','8','9','0'][i] || '-'}</td>
                 <td className="jersey-num">{p.number}</td>
                 <td>{p.name}</td>
@@ -135,7 +206,8 @@ export default function TeamEditor({ teamId, compact = false }) {
                     {p.is_starter ? 'Yes' : 'No'}
                   </button>
                 </td>
-                <td>
+                <td style={{ display: 'flex', gap: '0.25rem' }}>
+                  <button className="btn btn-xs" onClick={() => startEdit(p)}>edit</button>
                   <button className="btn btn-xs btn-danger" onClick={() => handleDelete(p.id)}>x</button>
                 </td>
               </tr>
