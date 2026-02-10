@@ -380,6 +380,10 @@ kbd {
 .period-breakdown .stat-table td { text-align: center; }
 .period-breakdown .stat-table th:first-child,
 .period-breakdown .stat-table td:first-child { text-align: left; }
+.half-col {
+  background: var(--bg-tertiary); font-weight: 700;
+  border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+}
 
 .score-summary {
   display: flex; justify-content: center; align-items: center;
@@ -423,5 +427,9 @@ kbd {
   font-size: 0.8rem; color: var(--text-secondary);
   background: var(--bg-tertiary); padding: 0.25rem 0.6rem;
   border-radius: 999px;
+}
+.summary-narrative {
+  color: var(--text-secondary); font-size: 0.9rem; font-style: italic;
+  margin-bottom: 0.75rem;
 }
 .summary-win { color: var(--made); border: 1px solid var(--made); background: transparent; }

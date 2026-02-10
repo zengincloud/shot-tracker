@@ -31,6 +31,23 @@ export default function GameDetail() {
     }
   }
 
+  // Brief narrative
+  const margin = Math.abs(stats1.totalPoints - stats2.totalPoints);
+  let narrative = '';
+  if (shots.length === 0) {
+    narrative = '';
+  } else if (isDraw) {
+    narrative = 'A hard-fought game ending in a draw.';
+  } else if (margin >= 20) {
+    narrative = `Dominant performance by ${winner?.name} winning by ${margin}.`;
+  } else if (margin >= 10) {
+    narrative = `Comfortable win for ${winner?.name} by ${margin} points.`;
+  } else if (margin >= 5) {
+    narrative = `Solid win for ${winner?.name}, leading by ${margin}.`;
+  } else {
+    narrative = `A close contest decided by just ${margin} point${margin === 1 ? '' : 's'}.`;
+  }
+
   return (
     <div className="game-detail">
       <button className="btn btn-sm" onClick={() => dispatch({ type: 'SET_VIEW', payload: 'history' })}>
@@ -49,11 +66,14 @@ export default function GameDetail() {
               {stats2.totalPoints} {team2?.name}
             </span>
           </div>
+          {narrative && <p className="summary-narrative">{narrative}</p>}
           <div className="summary-details">
             {winner && <span className="summary-tag summary-win">{winner.name} wins</span>}
             {isDraw && <span className="summary-tag">Draw</span>}
             <span className="summary-tag">{shots.length} shots</span>
             <span className="summary-tag">FG: {stats1.fieldGoal.pct}% vs {stats2.fieldGoal.pct}%</span>
+            <span className="summary-tag">3PT: {stats1.threePoint.pct}% vs {stats2.threePoint.pct}%</span>
+            <span className="summary-tag">FT: {stats1.freeThrow.pct}% vs {stats2.freeThrow.pct}%</span>
             {topScorer && <span className="summary-tag">Top scorer: #{topScorer.number} {topScorer.name} ({topPoints} pts)</span>}
           </div>
         </div>

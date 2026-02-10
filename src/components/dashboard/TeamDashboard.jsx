@@ -22,26 +22,40 @@ export default function TeamDashboard({ gameOverride = null }) {
   const format = PERIOD_OPTIONS.find(p => p.id === game.period_format);
   const periods = format?.periods || ['Q1', 'Q2', 'Q3', 'Q4'];
 
-  // Build period-by-period and cumulative scores
-  const periodScores = periods.map((period, i) => {
+  // Build period-by-period scores with half aggregates for 4-quarter games
+  const periodScores = [];
+  let running1 = 0, running2 = 0;
+
+  periods.forEach((period, i) => {
     const p1 = calculateTeamStats(shots, game.team1_id, period);
     const p2 = calculateTeamStats(shots, game.team2_id, period);
-    // Cumulative: sum all periods up to and including this one
-    const cumPeriods = periods.slice(0, i + 1);
-    let cum1 = 0, cum2 = 0;
-    for (const cp of cumPeriods) {
-      cum1 += calculateTeamStats(shots, game.team1_id, cp).totalPoints;
-      cum2 += calculateTeamStats(shots, game.team2_id, cp).totalPoints;
+    running1 += p1.totalPoints;
+    running2 += p2.totalPoints;
+    periodScores.push({
+      period, team1Pts: p1.totalPoints, team2Pts: p2.totalPoints,
+      cum1: running1, cum2: running2,
+    });
+
+    // Insert half aggregate after Q2 and Q4 in 4-quarter format
+    if (game.period_format === '4q' && (i === 1 || i === 3)) {
+      const halfLabel = i === 1 ? 'H1' : 'H2';
+      const startIdx = i === 1 ? 0 : 2;
+      let h1 = 0, h2 = 0;
+      for (let j = startIdx; j <= i; j++) {
+        h1 += calculateTeamStats(shots, game.team1_id, periods[j]).totalPoints;
+        h2 += calculateTeamStats(shots, game.team2_id, periods[j]).totalPoints;
+      }
+      periodScores.push({
+        period: halfLabel, team1Pts: h1, team2Pts: h2,
+        cum1: running1, cum2: running2, isHalf: true,
+      });
     }
-    return { period, team1Pts: p1.totalPoints, team2Pts: p2.totalPoints, cum1, cum2 };
   });
 
   // Check if OT shots exist
   const otStats1 = calculateTeamStats(shots, game.team1_id, 'OT');
   const otStats2 = calculateTeamStats(shots, game.team2_id, 'OT');
   if (otStats1.totalShots > 0 || otStats2.totalShots > 0) {
-    const totalAll1 = stats1.totalPoints;
-    const totalAll2 = stats2.totalPoints;
     const lastCum = periodScores[periodScores.length - 1];
     periodScores.push({
       period: 'OT',
@@ -100,25 +114,31 @@ export default function TeamDashboard({ gameOverride = null }) {
             <thead>
               <tr>
                 <th></th>
-                {periodScores.map(p => <th key={p.period}>{p.period}</th>)}
+                {periodScores.map(p => (
+                  <th key={p.period} className={p.isHalf ? 'half-col' : ''}>{p.period}</th>
+                ))}
                 <th>Total</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td className="stat-category">{team1?.name}</td>
-                {periodScores.map(p => <td key={p.period}>{p.team1Pts}</td>)}
+                {periodScores.map(p => (
+                  <td key={p.period} className={p.isHalf ? 'half-col' : ''}>{p.team1Pts}</td>
+                ))}
                 <td className="stat-made">{calculateTeamStats(shots, game.team1_id).totalPoints}</td>
               </tr>
               <tr>
                 <td className="stat-category">{team2?.name}</td>
-                {periodScores.map(p => <td key={p.period}>{p.team2Pts}</td>)}
+                {periodScores.map(p => (
+                  <td key={p.period} className={p.isHalf ? 'half-col' : ''}>{p.team2Pts}</td>
+                ))}
                 <td className="stat-made">{calculateTeamStats(shots, game.team2_id).totalPoints}</td>
               </tr>
               <tr className="stat-total-row">
                 <td style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Cumulative</td>
                 {periodScores.map(p => (
-                  <td key={p.period} style={{ fontSize: '0.75rem' }}>
+                  <td key={p.period} className={p.isHalf ? 'half-col' : ''} style={{ fontSize: '0.75rem' }}>
                     {p.cum1}-{p.cum2}
                   </td>
                 ))}
