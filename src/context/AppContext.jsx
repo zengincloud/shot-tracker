@@ -171,6 +171,16 @@ function appReducer(state, action) {
       return { ...state, activeGame, games };
     }
 
+    case 'DELETE_GAME': {
+      const games = state.games.filter(g => g.id !== action.payload);
+      const updates = { games };
+      if (state.selectedGameId === action.payload) {
+        updates.selectedGameId = null;
+        updates.currentView = 'history';
+      }
+      return { ...state, ...updates };
+    }
+
     case 'CANCEL_INPUT':
       return {
         ...state,

@@ -399,9 +399,18 @@ kbd {
 .game-card {
   background: var(--bg-secondary); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 1rem; cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s; position: relative;
 }
 .game-card:hover { border-color: var(--accent); }
+.game-delete {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 1.2rem; cursor: pointer; opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  line-height: 1; padding: 0.2rem 0.4rem;
+}
+.game-card:hover .game-delete { opacity: 1; }
+.game-delete:hover { color: var(--missed); }
 .game-card-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
 .game-card-matchup { font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
 .game-card-matchup .vs { color: var(--text-muted); font-size: 0.85rem; }

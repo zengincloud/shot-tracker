@@ -107,6 +107,11 @@ export async function updateGame(id, updates) {
   return data;
 }
 
+export async function deleteGame(id) {
+  const { error } = await supabase.from('games').delete().eq('id', id);
+  if (error) throw error;
+}
+
 // ── Shots ──
 
 export async function addShot(shot) {

@@ -10,6 +10,7 @@ export default function TeamEditor({ teamId, compact = false }) {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ number: '', name: '', position: 'PG', is_starter: false });
+  const [error, setError] = useState(null);
   const dragIndex = useRef(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
 
@@ -64,14 +65,13 @@ export default function TeamEditor({ teamId, compact = false }) {
 
   async function handleAdd() {
     if (!form.name.trim() || !form.number) return;
+    setError(null);
     try {
-      const maxOrder = team.players.reduce((max, p) => Math.max(max, p.sort_order ?? -1), -1);
       const player = await db.addPlayer(teamId, {
         number: parseInt(form.number, 10),
         name: form.name.trim(),
         position: form.position,
         is_starter: form.is_starter,
-        sort_order: maxOrder + 1,
       });
       dispatch({
         type: 'UPDATE_TEAM_PLAYERS',
@@ -81,6 +81,7 @@ export default function TeamEditor({ teamId, compact = false }) {
       setAdding(false);
     } catch (err) {
       console.error('Failed to add player:', err);
+      setError(err.message || 'Failed to add player');
     }
   }
 
@@ -183,7 +184,8 @@ export default function TeamEditor({ teamId, compact = false }) {
             Starter
           </label>
           <button className="btn btn-sm btn-primary" onClick={handleAdd}>Save</button>
-          <button className="btn btn-sm" onClick={() => setAdding(false)}>Cancel</button>
+          <button className="btn btn-sm" onClick={() => { setAdding(false); setError(null); }}>Cancel</button>
+          {error && <p style={{ color: 'var(--missed)', fontSize: '0.8rem', width: '100%', margin: '0.3rem 0 0' }}>{error}</p>}
         </div>
       )}
 
