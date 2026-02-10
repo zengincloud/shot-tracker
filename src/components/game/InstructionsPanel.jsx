@@ -17,8 +17,9 @@ export default function InstructionsPanel() {
         </div>
         <div className="instr-section">
           <h4>3. Zone</h4>
-          <p><kbd>Z</kbd> L.Corner &nbsp; <kbd>X</kbd> L.Wing &nbsp; <kbd>Q</kbd> L.Slot &nbsp; <kbd>C</kbd> Top &nbsp; <kbd>W</kbd> R.Slot &nbsp; <kbd>V</kbd> R.Wing &nbsp; <kbd>B</kbd> R.Corner</p>
-          <p><kbd>E</kbd> L.Short &nbsp; <kbd>R</kbd> R.Short &nbsp; <kbd>T</kbd> L.Paint &nbsp; <kbd>F</kbd> Top Paint &nbsp; <kbd>H</kbd> R.Paint &nbsp; <kbd>G</kbd> L.Elbow &nbsp; <kbd>J</kbd> R.Elbow</p>
+          <p>3PT: <kbd>Q</kbd> R.Corner &nbsp; <kbd>W</kbd> R.Wing &nbsp; <kbd>E</kbd> R.Slot &nbsp; <kbd>R</kbd> Top &nbsp; <kbd>T</kbd> L.Slot &nbsp; <kbd>Y</kbd> L.Wing &nbsp; <kbd>U</kbd> L.Corner</p>
+          <p>Mid: <kbd>A</kbd> R.Short &nbsp; <kbd>S</kbd> R.Elbow &nbsp; <kbd>D</kbd> L.Elbow &nbsp; <kbd>F</kbd> L.Short</p>
+          <p>Paint: <kbd>Z</kbd> R.Paint &nbsp; <kbd>X</kbd> Top Paint &nbsp; <kbd>C</kbd> L.Paint</p>
         </div>
         <div className="instr-section">
           <h4>4. Result</h4>
