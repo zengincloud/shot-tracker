@@ -1,5 +1,6 @@
 import { useAppContext } from '../../context/AppContext';
 import { PLAYER_KEYS } from '../../constants/keymap';
+import { getOrderedPlayers } from '../../utils/playerOrder';
 
 export default function PlayerSelector() {
   const { state } = useAppContext();
@@ -8,9 +9,7 @@ export default function PlayerSelector() {
   const team = teams.find(t => t.id === trackingTeamId);
   if (!team) return null;
 
-  const starters = team.players.filter(p => p.is_starter).sort((a, b) => a.number - b.number);
-  const bench = team.players.filter(p => !p.is_starter).sort((a, b) => a.number - b.number);
-  const ordered = [...starters, ...bench];
+  const ordered = getOrderedPlayers(team.players);
 
   return (
     <div className={`player-selector ${inputStep === 'player' ? 'active-step' : ''}`}>

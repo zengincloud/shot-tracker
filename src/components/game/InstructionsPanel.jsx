@@ -13,7 +13,7 @@ export default function InstructionsPanel() {
         </div>
         <div className="instr-section">
           <h4>2. Shot Type</h4>
-          <p><kbd>A</kbd> 2pt &nbsp; <kbd>S</kbd> 3pt &nbsp; <kbd>D</kbd> FT</p>
+          <p><kbd>1</kbd> FT &nbsp; <kbd>2</kbd> 2pt &nbsp; <kbd>3</kbd> 3pt</p>
         </div>
         <div className="instr-section">
           <h4>3. Zone</h4>

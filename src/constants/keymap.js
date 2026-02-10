@@ -1,9 +1,9 @@
 export const PLAYER_KEYS = ['1','2','3','4','5','6','7','8','9','0'];
 
 export const SHOT_TYPE_KEYS = {
-  'a': { id: '2pt', label: '2-Point' },
-  's': { id: '3pt', label: '3-Point' },
-  'd': { id: 'ft',  label: 'Free Throw' },
+  '1': { id: 'ft',  label: 'Free Throw' },
+  '2': { id: '2pt', label: '2-Point' },
+  '3': { id: '3pt', label: '3-Point' },
 };
 
 export const ZONE_KEYS = {

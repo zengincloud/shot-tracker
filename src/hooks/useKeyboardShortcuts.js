@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { PLAYER_KEYS, SHOT_TYPE_KEYS, ZONE_KEYS } from '../constants/keymap';
+import { getOrderedPlayers } from '../utils/playerOrder';
 import * as db from '../utils/db';
 
 export function useKeyboardShortcuts(state, dispatch) {
@@ -54,9 +55,7 @@ export function useKeyboardShortcuts(state, dispatch) {
           e.preventDefault();
           const team = teams.find(t => t.id === trackingTeamId);
           if (!team) break;
-          const starters = team.players.filter(p => p.is_starter).sort((a, b) => a.number - b.number);
-          const bench = team.players.filter(p => !p.is_starter).sort((a, b) => a.number - b.number);
-          const ordered = [...starters, ...bench];
+          const ordered = getOrderedPlayers(team.players);
           const player = ordered[idx];
           if (player) {
             dispatch({ type: 'SELECT_PLAYER', payload: player.id });

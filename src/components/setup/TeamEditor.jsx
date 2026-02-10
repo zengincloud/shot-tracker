@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { POSITIONS } from '../../constants/keymap';
+import { getOrderedPlayers } from '../../utils/playerOrder';
 import * as db from '../../utils/db';
 
 export default function TeamEditor({ teamId, compact = false }) {
@@ -9,18 +10,12 @@ export default function TeamEditor({ teamId, compact = false }) {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ number: '', name: '', position: 'PG', is_starter: false });
-  const [playerOrder, setPlayerOrder] = useState(null);
   const dragIndex = useRef(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
 
   if (!team) return null;
 
-  const starters = team.players.filter(p => p.is_starter).sort((a, b) => a.number - b.number);
-  const bench = team.players.filter(p => !p.is_starter).sort((a, b) => a.number - b.number);
-  const defaultOrder = [...starters, ...bench];
-  const ordered = playerOrder
-    ? playerOrder.map(id => team.players.find(p => p.id === id)).filter(Boolean)
-    : defaultOrder;
+  const ordered = getOrderedPlayers(team.players);
 
   function handleDragStart(e, index) {
     dragIndex.current = index;
@@ -43,10 +38,20 @@ export default function TeamEditor({ teamId, compact = false }) {
       setDragOverIndex(null);
       return;
     }
-    const currentOrder = ordered.map(p => p.id);
-    const [moved] = currentOrder.splice(fromIndex, 1);
-    currentOrder.splice(dropIndex, 0, moved);
-    setPlayerOrder(currentOrder);
+    const newOrder = [...ordered];
+    const [moved] = newOrder.splice(fromIndex, 1);
+    newOrder.splice(dropIndex, 0, moved);
+
+    const updatedPlayers = newOrder.map((p, i) => ({ ...p, sort_order: i }));
+    dispatch({
+      type: 'UPDATE_TEAM_PLAYERS',
+      payload: { teamId, players: updatedPlayers },
+    });
+
+    for (const p of updatedPlayers) {
+      db.updatePlayer(p.id, { sort_order: p.sort_order }).catch(console.error);
+    }
+
     dragIndex.current = null;
     setDragOverIndex(null);
   }
@@ -60,17 +65,18 @@ export default function TeamEditor({ teamId, compact = false }) {
   async function handleAdd() {
     if (!form.name.trim() || !form.number) return;
     try {
+      const maxOrder = team.players.reduce((max, p) => Math.max(max, p.sort_order ?? -1), -1);
       const player = await db.addPlayer(teamId, {
         number: parseInt(form.number, 10),
         name: form.name.trim(),
         position: form.position,
         is_starter: form.is_starter,
+        sort_order: maxOrder + 1,
       });
       dispatch({
         type: 'UPDATE_TEAM_PLAYERS',
         payload: { teamId, players: [...team.players, player] },
       });
-      setPlayerOrder(null);
       setForm({ number: '', name: '', position: 'PG', is_starter: false });
       setAdding(false);
     } catch (err) {
@@ -116,7 +122,6 @@ export default function TeamEditor({ teamId, compact = false }) {
         type: 'UPDATE_TEAM_PLAYERS',
         payload: { teamId, players: team.players.filter(p => p.id !== playerId) },
       });
-      setPlayerOrder(null);
       if (editingId === playerId) cancelEdit();
     } catch (err) {
       console.error('Failed to delete player:', err);
@@ -225,7 +230,7 @@ export default function TeamEditor({ teamId, compact = false }) {
       ) : (
         <table className="roster-table">
           <caption className="text-muted" style={{ captionSide: 'bottom', textAlign: 'left', padding: '0.5rem 0', fontSize: '0.75rem' }}>
-            Slot = keyboard key used during live tracking. Starters get keys 1-5, bench gets 6-0.
+            Slot = keyboard key used during live tracking. Drag rows to reorder.
           </caption>
           <thead>
             <tr>
