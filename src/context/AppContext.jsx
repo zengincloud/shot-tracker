@@ -163,6 +163,14 @@ function appReducer(state, action) {
       };
     }
 
+    case 'DELETE_SHOT': {
+      if (!state.activeGame) return state;
+      const shots = state.activeGame.shots.filter(s => s.id !== action.payload);
+      const activeGame = { ...state.activeGame, shots };
+      const games = state.games.map(g => g.id === activeGame.id ? activeGame : g);
+      return { ...state, activeGame, games };
+    }
+
     case 'CANCEL_INPUT':
       return {
         ...state,

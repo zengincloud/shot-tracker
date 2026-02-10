@@ -1,8 +1,9 @@
 import { useAppContext } from '../../context/AppContext';
 import { ZONE_KEYS } from '../../constants/keymap';
+import * as db from '../../utils/db';
 
 export default function ShotLog() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const { activeGame, teams } = state;
 
   if (!activeGame) return null;
@@ -50,6 +51,13 @@ export default function ShotLog() {
                 <span className="shot-zone">{getZoneLabel(shot.zone)}</span>
                 <span className="shot-team-badge">{getTeamName(shot.team_id).slice(0, 3).toUpperCase()}</span>
                 {shot.period && <span className="shot-period">{shot.period}</span>}
+                <button
+                  className="btn btn-xs shot-delete"
+                  onClick={() => {
+                    db.deleteShot(shot.id).catch(console.error);
+                    dispatch({ type: 'DELETE_SHOT', payload: shot.id });
+                  }}
+                >✕</button>
               </div>
             );
           })}

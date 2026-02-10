@@ -301,6 +301,13 @@ body {
   border-radius: 3px; background: var(--bg-tertiary);
 }
 .shot-zone { color: var(--text-secondary); font-size: 0.75rem; flex: 1; }
+.shot-delete {
+  opacity: 0; padding: 0 0.3rem; font-size: 0.65rem; line-height: 1;
+  color: var(--text-muted); background: none; border: none; cursor: pointer;
+  transition: opacity 0.15s;
+}
+.shot-entry:hover .shot-delete { opacity: 1; }
+.shot-delete:hover { color: var(--missed); }
 .shot-team-badge {
   font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.3rem;
   border-radius: 3px; background: var(--bg-primary); color: var(--text-muted);
