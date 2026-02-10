@@ -40,7 +40,7 @@ export default function Header({ user, onSignOut }) {
         </button>
       </nav>
       <div className="header-right">
-        <span className="user-name">{user?.user_metadata?.full_name || user?.email}</span>
+        <span className="user-name">{user?.username || 'User'}</span>
         <button className="btn btn-sm" onClick={onSignOut}>Sign Out</button>
       </div>
     </header>

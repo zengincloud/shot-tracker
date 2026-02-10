@@ -34,14 +34,14 @@ function AppContent({ user, onSignOut }) {
 }
 
 export default function App() {
-  const { user, loading, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, signIn, signOut } = useAuth();
 
   if (loading) {
     return <div className="loading-screen"><div className="spinner" />Loading...</div>;
   }
 
   if (!user) {
-    return <LoginScreen onSignIn={signInWithGoogle} />;
+    return <LoginScreen onSignIn={signIn} />;
   }
 
   return (
