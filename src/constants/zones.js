@@ -1,9 +1,20 @@
 export const ZONES = [
-  { id: 'left-corner',  label: 'Left Corner',  key: 'Z', x: 10,  y: 85 },
-  { id: 'left-wing',    label: 'Left Wing',    key: 'X', x: 10,  y: 45 },
-  { id: 'top-key',      label: 'Top of Key',   key: 'C', x: 50,  y: 15 },
-  { id: 'right-wing',   label: 'Right Wing',   key: 'V', x: 90,  y: 45 },
-  { id: 'right-corner', label: 'Right Corner',  key: 'B', x: 90,  y: 85 },
-  { id: 'paint',        label: 'Paint',         key: 'F', x: 50,  y: 60 },
-  { id: 'ft-line',      label: 'FT Line',       key: 'G', x: 50,  y: 45 },
+  // Perimeter (3pt line)
+  { id: 'left-corner',       label: 'L Corner',    key: 'Z', x: 8,  y: 88 },
+  { id: 'left-wing',         label: 'L Wing',      key: 'X', x: 8,  y: 42 },
+  { id: 'left-slot',         label: 'L Slot',      key: 'Q', x: 28, y: 25 },
+  { id: 'top-key',           label: 'Top Key',     key: 'C', x: 50, y: 12 },
+  { id: 'right-slot',        label: 'R Slot',      key: 'W', x: 72, y: 25 },
+  { id: 'right-wing',        label: 'R Wing',      key: 'V', x: 92, y: 42 },
+  { id: 'right-corner',      label: 'R Corner',    key: 'B', x: 92, y: 88 },
+  // Short corners (baseline, inside arc)
+  { id: 'left-short-corner', label: 'L Short',     key: 'E', x: 25, y: 82 },
+  { id: 'right-short-corner',label: 'R Short',     key: 'R', x: 75, y: 82 },
+  // Paint
+  { id: 'left-paint',        label: 'L Paint',     key: 'T', x: 37, y: 68 },
+  { id: 'top-paint',         label: 'Top Paint',   key: 'F', x: 50, y: 55 },
+  { id: 'right-paint',       label: 'R Paint',     key: 'H', x: 63, y: 68 },
+  // Elbows
+  { id: 'left-elbow',        label: 'L Elbow',     key: 'G', x: 37, y: 48 },
+  { id: 'right-elbow',       label: 'R Elbow',     key: 'J', x: 63, y: 48 },
 ];

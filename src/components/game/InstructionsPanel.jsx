@@ -17,8 +17,8 @@ export default function InstructionsPanel() {
         </div>
         <div className="instr-section">
           <h4>3. Zone</h4>
-          <p><kbd>Z</kbd> L.Corner &nbsp; <kbd>X</kbd> L.Wing &nbsp; <kbd>C</kbd> Top &nbsp; <kbd>V</kbd> R.Wing &nbsp; <kbd>B</kbd> R.Corner</p>
-          <p><kbd>F</kbd> Paint &nbsp; <kbd>G</kbd> FT Line</p>
+          <p><kbd>Z</kbd> L.Corner &nbsp; <kbd>X</kbd> L.Wing &nbsp; <kbd>Q</kbd> L.Slot &nbsp; <kbd>C</kbd> Top &nbsp; <kbd>W</kbd> R.Slot &nbsp; <kbd>V</kbd> R.Wing &nbsp; <kbd>B</kbd> R.Corner</p>
+          <p><kbd>E</kbd> L.Short &nbsp; <kbd>R</kbd> R.Short &nbsp; <kbd>T</kbd> L.Paint &nbsp; <kbd>F</kbd> Top Paint &nbsp; <kbd>H</kbd> R.Paint &nbsp; <kbd>G</kbd> L.Elbow &nbsp; <kbd>J</kbd> R.Elbow</p>
         </div>
         <div className="instr-section">
           <h4>4. Result</h4>
@@ -26,7 +26,7 @@ export default function InstructionsPanel() {
         </div>
         <div className="instr-section">
           <h4>Utility</h4>
-          <p><kbd>Q</kbd> Switch team &nbsp; <kbd>W</kbd> Hide this &nbsp; <kbd>Tab</kbd> Undo &nbsp; <kbd>Esc</kbd> Cancel</p>
+          <p><kbd>Q</kbd> Switch team (step 1) &nbsp; <kbd>W</kbd> Hide this (step 1) &nbsp; <kbd>Tab</kbd> Undo &nbsp; <kbd>Esc</kbd> Cancel</p>
         </div>
       </div>
     </div>

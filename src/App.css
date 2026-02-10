@@ -168,6 +168,16 @@ body {
 .roster-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--bg-tertiary); }
 .roster-table .starter-row { background: var(--bg-secondary); }
 .roster-table .editing-row { outline: 1px solid var(--accent); }
+.drag-handle {
+  cursor: grab; color: var(--text-muted); font-size: 0.9rem;
+  user-select: none; width: 20px; text-align: center;
+}
+.drag-handle:active { cursor: grabbing; }
+.roster-table tr.dragging-row { opacity: 0.4; }
+.roster-table tr.drag-over-row {
+  border-top: 2px solid var(--accent);
+}
+.roster-table tr.drag-over-row td { border-top: 2px solid var(--accent); }
 .slot-key {
   font-family: monospace; font-weight: 700; color: var(--accent);
   background: var(--bg-primary); padding: 0.15rem 0.4rem;

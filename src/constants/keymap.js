@@ -7,13 +7,20 @@ export const SHOT_TYPE_KEYS = {
 };
 
 export const ZONE_KEYS = {
-  'z': { id: 'left-corner',  label: 'Left Corner' },
-  'x': { id: 'left-wing',    label: 'Left Wing' },
-  'c': { id: 'top-key',      label: 'Top of Key' },
-  'v': { id: 'right-wing',   label: 'Right Wing' },
-  'b': { id: 'right-corner', label: 'Right Corner' },
-  'f': { id: 'paint',        label: 'Paint' },
-  'g': { id: 'ft-line',      label: 'FT Line' },
+  'z': { id: 'left-corner',        label: 'L Corner' },
+  'x': { id: 'left-wing',          label: 'L Wing' },
+  'q': { id: 'left-slot',          label: 'L Slot' },
+  'c': { id: 'top-key',            label: 'Top Key' },
+  'w': { id: 'right-slot',         label: 'R Slot' },
+  'v': { id: 'right-wing',         label: 'R Wing' },
+  'b': { id: 'right-corner',       label: 'R Corner' },
+  'e': { id: 'left-short-corner',  label: 'L Short' },
+  'r': { id: 'right-short-corner', label: 'R Short' },
+  't': { id: 'left-paint',         label: 'L Paint' },
+  'f': { id: 'top-paint',          label: 'Top Paint' },
+  'h': { id: 'right-paint',        label: 'R Paint' },
+  'g': { id: 'left-elbow',         label: 'L Elbow' },
+  'j': { id: 'right-elbow',        label: 'R Elbow' },
 };
 
 export const RESULT_KEYS = {

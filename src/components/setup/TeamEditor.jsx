@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { POSITIONS } from '../../constants/keymap';
 import * as db from '../../utils/db';
@@ -9,12 +9,53 @@ export default function TeamEditor({ teamId, compact = false }) {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ number: '', name: '', position: 'PG', is_starter: false });
+  const [playerOrder, setPlayerOrder] = useState(null);
+  const dragIndex = useRef(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
 
   if (!team) return null;
 
   const starters = team.players.filter(p => p.is_starter).sort((a, b) => a.number - b.number);
   const bench = team.players.filter(p => !p.is_starter).sort((a, b) => a.number - b.number);
-  const ordered = [...starters, ...bench];
+  const defaultOrder = [...starters, ...bench];
+  const ordered = playerOrder
+    ? playerOrder.map(id => team.players.find(p => p.id === id)).filter(Boolean)
+    : defaultOrder;
+
+  function handleDragStart(e, index) {
+    dragIndex.current = index;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+    e.currentTarget.classList.add('dragging-row');
+  }
+
+  function handleDragOver(e, index) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (index !== dragOverIndex) setDragOverIndex(index);
+  }
+
+  function handleDrop(e, dropIndex) {
+    e.preventDefault();
+    const fromIndex = dragIndex.current;
+    if (fromIndex === null || fromIndex === dropIndex) {
+      dragIndex.current = null;
+      setDragOverIndex(null);
+      return;
+    }
+    const currentOrder = ordered.map(p => p.id);
+    const [moved] = currentOrder.splice(fromIndex, 1);
+    currentOrder.splice(dropIndex, 0, moved);
+    setPlayerOrder(currentOrder);
+    dragIndex.current = null;
+    setDragOverIndex(null);
+  }
+
+  function handleDragEnd(e) {
+    e.currentTarget.classList.remove('dragging-row');
+    dragIndex.current = null;
+    setDragOverIndex(null);
+  }
 
   async function handleAdd() {
     if (!form.name.trim() || !form.number) return;
@@ -29,6 +70,7 @@ export default function TeamEditor({ teamId, compact = false }) {
         type: 'UPDATE_TEAM_PLAYERS',
         payload: { teamId, players: [...team.players, player] },
       });
+      setPlayerOrder(null);
       setForm({ number: '', name: '', position: 'PG', is_starter: false });
       setAdding(false);
     } catch (err) {
@@ -74,6 +116,7 @@ export default function TeamEditor({ teamId, compact = false }) {
         type: 'UPDATE_TEAM_PLAYERS',
         payload: { teamId, players: team.players.filter(p => p.id !== playerId) },
       });
+      setPlayerOrder(null);
       if (editingId === playerId) cancelEdit();
     } catch (err) {
       console.error('Failed to delete player:', err);
@@ -186,6 +229,7 @@ export default function TeamEditor({ teamId, compact = false }) {
           </caption>
           <thead>
             <tr>
+              <th></th>
               <th>Slot</th>
               <th>#</th>
               <th>Name</th>
@@ -196,7 +240,16 @@ export default function TeamEditor({ teamId, compact = false }) {
           </thead>
           <tbody>
             {ordered.map((p, i) => (
-              <tr key={p.id} className={`${p.is_starter ? 'starter-row' : ''} ${editingId === p.id ? 'editing-row' : ''}`}>
+              <tr
+                key={p.id}
+                draggable={!editingId && !adding}
+                onDragStart={e => handleDragStart(e, i)}
+                onDragOver={e => handleDragOver(e, i)}
+                onDrop={e => handleDrop(e, i)}
+                onDragEnd={handleDragEnd}
+                className={`${p.is_starter ? 'starter-row' : ''} ${editingId === p.id ? 'editing-row' : ''} ${dragOverIndex === i ? 'drag-over-row' : ''}`}
+              >
+                <td className="drag-handle">&#x2630;</td>
                 <td className="slot-key">{['1','2','3','4','5','6','7','8','9','0'][i] || '-'}</td>
                 <td className="jersey-num">{p.number}</td>
                 <td>{p.name}</td>
