@@ -379,3 +379,21 @@ kbd {
 /* ── Game Detail ── */
 .game-detail { max-width: 900px; margin: 0 auto; }
 .game-detail h2 { margin: 1rem 0; }
+.game-summary {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.5rem;
+  text-align: center;
+}
+.summary-score {
+  font-size: 1.5rem; font-weight: 700; display: flex;
+  justify-content: center; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;
+}
+.summary-winner { color: var(--made); }
+.summary-dash { color: var(--text-muted); font-weight: 400; }
+.summary-details { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+.summary-tag {
+  font-size: 0.8rem; color: var(--text-secondary);
+  background: var(--bg-tertiary); padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+.summary-win { color: var(--made); border: 1px solid var(--made); background: transparent; }
