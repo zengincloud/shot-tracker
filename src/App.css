@@ -354,6 +354,16 @@ kbd {
 .stat-total-row td { font-weight: 700; border-top: 1px solid var(--border); }
 .stat-total { font-size: 1.2rem; color: var(--accent); }
 
+.period-breakdown {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem; margin-top: 1.5rem;
+}
+.period-breakdown .section-title { margin-bottom: 0.5rem; }
+.period-breakdown .stat-table th,
+.period-breakdown .stat-table td { text-align: center; }
+.period-breakdown .stat-table th:first-child,
+.period-breakdown .stat-table td:first-child { text-align: left; }
+
 .score-summary {
   display: flex; justify-content: center; align-items: center;
   gap: 1rem; padding: 1rem; font-size: 1.3rem; font-weight: 700;
